@@ -1,0 +1,13 @@
+.image-sleipnir-background {
+  background-image: url("/sleipnir_1.png");
+  background-size: cover;
+  background-position: center;
+  background-blend-mode: lighten;
+}
+
+.textp {
+  background-image: url("/sleipnir_1.png");
+  background-size: cover;
+  background-position: center;
+  background-clip: text;
+}
