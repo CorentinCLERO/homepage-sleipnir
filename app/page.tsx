@@ -1,53 +1,47 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { motion, useScroll, useTransform } from "framer-motion";
 import "./page.css";
 
 export default function Home() {
-  const blockRef = useRef(null);
-  const [visibleRatio, setVisibleRatio] = useState(0);
+  const { scrollYProgress } = useScroll();
 
-  useEffect(() => {
-    const observer = new window.IntersectionObserver(
-      ([entry]) => {
-        setVisibleRatio(entry.intersectionRatio);
-      },
-      {
-        threshold: Array.from({ length: 101 }, (_, i) => i / 100),
-      }
-    );
+  const backgroundColor = useTransform(
+    scrollYProgress,
+    [0, 0.5, 1],
+    [
+      "rgba(255, 255, 255, 0)",
+      "rgba(255, 255, 255, 1)",
+      "rgba(255, 255, 255, 1)",
+    ]
+  );
 
-    if (blockRef.current) {
-      observer.observe(blockRef.current);
-    }
-
-    return () => {
-      if (blockRef.current) {
-        observer.unobserve(blockRef.current);
-      }
-    };
-  }, []);
+  const textOpacity = useTransform(scrollYProgress, [0, 0.5, 1], [0, 0.3, 0.3]);
 
   return (
     <div style={{ overflowX: "hidden" }}>
-      <div className="h-screen" ref={blockRef}>
-        <div
+      <div className="h-screen">
+        <motion.div
           className="fixed h-screen w-screen image-sleipnir-background flex flex-col"
-          style={{
-            backgroundColor: `rgba(255, 255, 255, ${1 - visibleRatio})`,
-          }}
+          style={{ backgroundColor }}
         >
-          <h1
+          <motion.h1
             className="font-bold text-9xl textp h-screen w-screen flex justify-center items-center"
             style={{
-              color: `rgb(0 0 0 / ${0.3 - visibleRatio})`,
+              color: useTransform(
+                textOpacity,
+                (opacity) => `rgb(0 0 0 / ${opacity})`
+              ),
             }}
           >
             SLEIPNIR
-          </h1>
-        </div>
+          </motion.h1>
+        </motion.div>
       </div>
       <div className="h-screen"></div>
+      <div className="h-screen relative overflow-x-hidden">
+        <p style={{ position: "absolute", left: "0%" }}>hello</p>
+      </div>
     </div>
   );
 }
